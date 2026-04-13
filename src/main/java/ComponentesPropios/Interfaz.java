@@ -43,16 +43,14 @@ public class Interfaz extends javax.swing.JFrame {
     }
 
     public void cargarTabla() {
-        String[] columnas = {"Par", "Impar", "Cadena", "Lista", "ComboBox"};
-        modelo = new DefaultTableModel(null, columnas);
-        jtblValores.setModel(modelo);
+
     }
 
     //Cargar Lista de forma ambigua sin Base de datos
     /*
     public void cargarFilas() {
         String filas[] = new String[5];
-        String texto = jtxtNumero.getText();
+        String texto = jtxtNumero.getText();S
         try {
             int numero = Integer.parseInt(texto);
             if (numero % 2 == 0) {
@@ -97,6 +95,9 @@ public class Interfaz extends javax.swing.JFrame {
 
     public void selectValoresTabla() {
         try {
+            String[] columnas = {"Par", "Impar", "Cadena", "Lista", "ComboBox"};
+            modelo = new DefaultTableModel(null, columnas);
+            jtblValores.setModel(modelo);
             String[] filas = new String[5];
             Conexion cn = new Conexion();
             Connection cc = cn.Conectar();
@@ -415,7 +416,7 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
-        
+
         if (activo == false) {
             jButton4.setBackground(Color.GREEN);
             activo = true;
