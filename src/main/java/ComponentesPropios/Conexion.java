@@ -18,7 +18,7 @@ public class Conexion {
         Connection cn =  null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            cn = DriverManager.getConnection("jdbc:mysql://localhost/examenU2", "root", "");
+            cn = DriverManager.getConnection("jdbc:mysql://localhost/exa1", "root", "");
             System.out.println((cn == null) ? "no valio" : "valio");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);

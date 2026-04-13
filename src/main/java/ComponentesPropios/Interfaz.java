@@ -131,11 +131,14 @@ public class Interfaz extends javax.swing.JFrame {
             int numero = Integer.parseInt(texto);
             if (numero % 2 == 0) {
                 valorPar = String.valueOf(numero);
+                jListMio1.agregarElemento(String.valueOf(numero));
             } else {
                 valorImpar = String.valueOf(numero);
+                jListMio1.agregarElemento(String.valueOf(numero));
             }
         } catch (NumberFormatException ex) {
             valorCadena = texto;
+            jListMio1.agregarElemento(texto);
         }
 
         String valorLista = jListMio2.getSelectedValue();
@@ -393,7 +396,7 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        cargarListaBoton();
+        cargarLista();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jListMio2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jListMio2MouseClicked

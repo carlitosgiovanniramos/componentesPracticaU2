@@ -4,6 +4,12 @@
  */
 package ComponentesPropios;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -16,11 +22,13 @@ public class Interfaz1 extends javax.swing.JFrame {
      * Creates new form Interfaz1
      */
     DefaultTableModel modelo;
+    DefaultListModel modeloLista;
 
     public Interfaz1() {
         initComponents();
         cargarTabla2();
         cargarFilas2();
+        cargarListaBD();
     }
 
     public void cargarTabla2() {
@@ -40,6 +48,50 @@ public class Interfaz1 extends javax.swing.JFrame {
         jTableMio1.setModel(modelo);
     }
 
+    
+        public void guardarListaBD() {
+        String texto = jtxtFLista.getText();
+
+        String sql = "INSERT INTO valores VALUES(?)";
+
+        try {
+            Conexion cn = new Conexion();
+            Connection cc = cn.Conectar();
+            PreparedStatement ps = cc.prepareStatement(sql);
+
+            ps.setString(1, texto);   // 👈 guardamos aquí
+
+            ps.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Guardado");
+            cargarListaBD();
+            ps.close();
+            cc.close();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+    public void cargarListaBD() {
+        modeloLista = new DefaultListModel();
+
+        try {
+            Conexion cn = new Conexion();
+            Connection cc = cn.Conectar();
+            Statement st = cc.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM valores");
+
+            while (rs.next()) {
+                modeloLista.addElement(rs.getString("lista")); // 👈 UNA SOLA COLUMNA
+            }
+
+            jListMio1.setModel(modeloLista);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -51,6 +103,10 @@ public class Interfaz1 extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableMio1 = new ComponentesPropios.jTableMio();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jListMio1 = new ComponentesPropios.jListMio<>();
+        jtxtFLista = new javax.swing.JTextField();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -67,6 +123,20 @@ public class Interfaz1 extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTableMio1);
 
+        jListMio1.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane2.setViewportView(jListMio1);
+
+        jButton2.setText("Cargar Lista");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -74,7 +144,13 @@ public class Interfaz1 extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(91, 91, 91)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(124, Short.MAX_VALUE))
+                .addGap(59, 59, 59)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton2)
+                    .addComponent(jScrollPane2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jtxtFLista, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(249, 249, 249))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -82,10 +158,25 @@ public class Interfaz1 extends javax.swing.JFrame {
                 .addGap(39, 39, 39)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(48, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(31, 31, 31)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jtxtFLista, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2))
+                .addGap(18, 18, 18)
+                .addComponent(jButton2)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        guardarListaBD();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -123,7 +214,11 @@ public class Interfaz1 extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton2;
+    private ComponentesPropios.jListMio<String> jListMio1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private ComponentesPropios.jTableMio jTableMio1;
+    private javax.swing.JTextField jtxtFLista;
     // End of variables declaration//GEN-END:variables
 }
