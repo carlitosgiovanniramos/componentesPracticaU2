@@ -5,3 +5,323 @@
     <version>9.6.0</version>
     <scope>compile</scope>
 </dependency>
+
+
+//Conexión
+
+public class Conexion {
+    public Connection conectar() {
+        Connection cn = null;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            cn = DriverManager.getConnection("jdbc:mysql://localhost/cuarto", "root", "");
+            System.out.println((cn == null) ? "no valio" : "valio");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return cn;
+    }
+}
+
+//Table
+public class jTableMio extends JTable {
+
+    public jTableMio() {
+        super();
+        configurarTamañoCeldas();
+        configurarRenderer();
+    }
+
+    private void configurarTamañoCeldas() {
+        this.setRowHeight(20);
+    }
+
+    private void configurarRenderer() {
+        this.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+
+            @Override
+            public java.awt.Component getTableCellRendererComponent(
+                    JTable table, Object value, boolean isSelected,
+                    boolean hasFocus, int row, int column) {
+
+                java.awt.Component celda = super.getTableCellRendererComponent(
+                        table, value, isSelected, hasFocus, row, column);
+
+                if (isSelected) {
+                    return celda;
+                }
+
+                String texto = (value == null) ? "" : value.toString();
+
+                celda.setBackground(java.awt.Color.WHITE);
+
+                try {
+                    int numero = Integer.parseInt(texto);
+
+                    if (numero % 2 == 0) {
+                        celda.setBackground(java.awt.Color.GREEN);
+                    } else {
+                        celda.setBackground(java.awt.Color.RED);
+                    }
+
+                } catch (NumberFormatException e) {
+                    celda.setBackground(java.awt.Color.WHITE);
+                }
+
+                return celda;
+            }
+        });
+    }
+}
+
+
+//Lista
+
+public class jListMio<E> extends JList<E> {
+
+    public jListMio() {
+        super();
+        configurarRenderer();
+    }
+
+    private void configurarRenderer() {
+
+        this.setCellRenderer(new DefaultListCellRenderer() {
+
+            @Override
+            public Component getListCellRendererComponent(
+                    JList<?> list, Object value, int index,
+                    boolean isSelected, boolean cellHasFocus) {
+
+                Component c = super.getListCellRendererComponent(
+                        list, value, index, isSelected, cellHasFocus);
+
+                if (isSelected) {
+                    return c;
+                }
+
+                String texto = (value == null) ? "" : value.toString();
+
+                c.setBackground(Color.WHITE);
+
+                try {
+                    int num = Integer.parseInt(texto);
+
+                    if (num % 2 == 0) {
+                        c.setBackground(Color.GREEN);
+                    } else {
+                        c.setBackground(Color.RED);
+                    }
+
+                } catch (Exception e) {
+                    c.setBackground(Color.WHITE);
+                }
+
+                return c;
+            }
+        });
+    }
+
+    // =========================
+    // ➕ AGREGAR SIN DUPLICADOS
+    // =========================
+    public void agregarElemento(String texto) {
+        DefaultListModel modelo = (DefaultListModel) this.getModel();
+
+        if (!modelo.contains(texto)) {
+            modelo.addElement(texto);
+        } else {
+            JOptionPane.showMessageDialog(null, "Elemento repetido");
+        }
+    }
+
+}
+
+
+//Combo
+
+public class jComboBoxMio extends JComboBox {
+
+    public jComboBoxMio() {
+        super();
+        configurarRenderer();
+    }
+
+    private void configurarRenderer() {
+        this.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component celda = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+                if (isSelected) {
+                    return celda;
+                }
+                String texto = (value == null) ? "" : value.toString();
+                celda.setBackground(Color.WHITE);
+
+                try {
+                    int num = Integer.parseInt(texto);
+
+                    if (num % 2 == 0) {
+                        celda.setBackground(Color.GREEN);
+                    } else {
+                        celda.setBackground(Color.RED);
+                    }
+
+                } catch (Exception e) {
+                    celda.setBackground(Color.WHITE);
+                }
+                return celda;
+            }
+        });
+    }
+}
+
+
+    public void cargarComboBox() {
+        String valoresCombo[] = {"1", "2", "test"};
+        modeloCombo = new DefaultComboBoxModel(valoresCombo);
+        jComboBoxMio1.setModel(modeloCombo);
+    }
+
+    public void cargarLista() {
+        modeloLista = new DefaultListModel();
+        jListMio1.setModel(modeloLista);
+    }
+
+    public void cargarListaBoton() {
+        String texto = jtxtFLista.getText();
+        jListMio1.agregarElemento(texto);
+    }
+
+    public void cargarListaAutomaticamente() {
+        String valoresLista[] = {"1", "2", "3", "4"};
+        modeloLista1 = new DefaultListModel();
+        for (String valor : valoresLista) {
+            modeloLista1.addElement(valor);
+        }
+        jListMio2.setModel(modeloLista1);
+    }
+
+    public void selectValoresTabla() {
+        try {
+            String[] columnas = {"Par", "Impar", "Cadena", "Lista", "ComboBox"};
+            modelo = new DefaultTableModel(null, columnas);
+            jtblValores.setModel(modelo);
+            String[] filas = new String[5];
+            Conexion cn = new Conexion();
+            Connection cc = cn.Conectar();
+            String sql = "SELECT * FROM valores";
+            Statement psd = cc.createStatement();
+            ResultSet rs = psd.executeQuery(sql);
+
+            while (rs.next()) {
+                filas[0] = rs.getString("par");
+                filas[1] = rs.getString("impar");
+                filas[2] = rs.getString("cadena");
+                filas[3] = rs.getString("lista");
+                filas[4] = rs.getString("combo");
+
+                modelo.addRow(filas);
+                jtblValores.setModel(modelo);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+    public void insertValor() {
+
+        String valorPar = "";
+        String valorImpar = "";
+        String valorCadena = "";
+
+        String texto = jtxtNumero.getText();
+        try {
+            int numero = Integer.parseInt(texto);
+            if (numero % 2 == 0) {
+                valorPar = String.valueOf(numero);
+            } else {
+                valorImpar = String.valueOf(numero);
+            }
+        } catch (NumberFormatException ex) {
+            valorCadena = texto;
+        }
+
+        String valorLista = jListMio2.getSelectedValue();
+        String valorCombo = String.valueOf(jComboBoxMio1.getSelectedItem());
+
+        if (valorLista == null) {
+            valorLista = "";
+        }
+        if (valorCombo.equals("null")) {
+            valorCombo = "";
+        }
+
+        String sql = "INSERT INTO valores VALUES(?,?,?,?,?)";
+
+        try {
+            Conexion cn = new Conexion();
+            Connection cc = cn.Conectar();
+            PreparedStatement psd = cc.prepareStatement(sql);
+
+            psd.setString(1, valorPar);
+            psd.setString(2, valorImpar);
+            psd.setString(3, valorCadena);
+            psd.setString(4, valorLista);
+            psd.setString(5, valorCombo);
+
+            int respuesta = psd.executeUpdate();
+
+            if (respuesta > 0) {
+                JOptionPane.showMessageDialog(null, "Se insertaron los valores correctamente");
+                selectValoresTabla();
+            }
+            psd.close();
+            cc.close();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error al guardar en BD: " + ex.getMessage());
+        }
+    }
+
+// ... dentro de tu clase ...
+    public void selectRowStudent() {
+        jtblValores.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                // El !e.getValueIsAdjusting() evita que el evento se dispare dos veces seguidas por el clic
+                if (!e.getValueIsAdjusting() && jtblValores.getSelectedRow() != -1) {
+
+                    int fila = jtblValores.getSelectedRow();
+
+                    // 1. RECUPERAR EL NÚMERO / TEXTO
+                    // Extraemos los valores de las columnas 0, 1 y 2 asumiendo que evitamos errores de NullPointer
+                    String valPar = jtblValores.getValueAt(fila, 0) != null ? jtblValores.getValueAt(fila, 0).toString() : "";
+                    String valImpar = jtblValores.getValueAt(fila, 1) != null ? jtblValores.getValueAt(fila, 1).toString() : "";
+                    String valCadena = jtblValores.getValueAt(fila, 2) != null ? jtblValores.getValueAt(fila, 2).toString() : "";
+
+                    // Evaluamos cuál de los tres tiene texto y lo devolvemos al jtxtNumero
+                    if (!valPar.isEmpty()) {
+                        jtxtNumero.setText(valPar);
+                    } else if (!valImpar.isEmpty()) {
+                        jtxtNumero.setText(valImpar);
+                    } else {
+                        jtxtNumero.setText(valCadena);
+                    }
+
+                    // 2. RECUPERAR EL VALOR DE LA LISTA (Columna 3)
+                    String valorLista = jtblValores.getValueAt(fila, 3) != null ? jtblValores.getValueAt(fila, 3).toString() : "";
+                    // setSelectedValue busca el texto en tu JList y lo marca como seleccionado. 
+                    // El "true" le dice a la lista que haga scroll automático si el valor está oculto muy abajo.
+                    jListMio2.setSelectedValue(valorLista, true);
+
+                    // 3. RECUPERAR EL VALOR DEL COMBOBOX (Columna 4)
+                    String valorCombo = jtblValores.getValueAt(fila, 4) != null ? jtblValores.getValueAt(fila, 4).toString() : "";
+                    // setSelectedItem busca el texto en el JComboBox y lo selecciona
+                    jComboBoxMio1.setSelectedItem(valorCombo);
+
+                }
+            }
+        });
+    }
+}
