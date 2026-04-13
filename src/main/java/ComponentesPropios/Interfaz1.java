@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -29,6 +30,7 @@ public class Interfaz1 extends javax.swing.JFrame {
         cargarTabla2();
         cargarFilas2();
         cargarListaBD();
+        cargarComboBD();
     }
 
     public void cargarTabla2() {
@@ -48,8 +50,7 @@ public class Interfaz1 extends javax.swing.JFrame {
         jTableMio1.setModel(modelo);
     }
 
-    
-        public void guardarListaBD() {
+    public void guardarListaBD() {
         String texto = jtxtFLista.getText();
 
         String sql = "INSERT INTO valores VALUES(?)";
@@ -92,6 +93,51 @@ public class Interfaz1 extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, e);
         }
     }
+
+    public void cargarComboBD() {
+        DefaultComboBoxModel modeloCombo = new DefaultComboBoxModel();
+
+        try {
+            Conexion cn = new Conexion();
+            Connection cc = cn.Conectar();
+            Statement st = cc.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM valores");
+
+            while (rs.next()) {
+                modeloCombo.addElement(rs.getString("lista")); // 👈 eliges qué columna mostrar
+            }
+
+            jComboBoxMio1.setModel(modeloCombo);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+    public void guardarComboBD() {
+        String valor = jComboBoxMio1.getSelectedItem().toString();
+
+        String sql = "INSERT INTO valores VALUES (?)";
+
+        try {
+            Conexion cn = new Conexion();
+            Connection cc = cn.Conectar();
+            PreparedStatement ps = cc.prepareStatement(sql);
+
+            ps.setString(1, valor);  // 👈 lo del combo
+
+            ps.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Guardado desde Combo");
+
+            ps.close();
+            cc.close();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -107,6 +153,8 @@ public class Interfaz1 extends javax.swing.JFrame {
         jListMio1 = new ComponentesPropios.jListMio<>();
         jtxtFLista = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
+        jComboBoxMio1 = new ComponentesPropios.jComboBoxMio();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -137,6 +185,19 @@ public class Interfaz1 extends javax.swing.JFrame {
             }
         });
 
+        jComboBoxMio1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxMio1ActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText("jButton1");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -149,8 +210,13 @@ public class Interfaz1 extends javax.swing.JFrame {
                     .addComponent(jButton2)
                     .addComponent(jScrollPane2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jtxtFLista, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(249, 249, 249))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jtxtFLista, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(29, 29, 29)
+                        .addComponent(jComboBoxMio1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton1))
+                .addGap(148, 148, 148))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -162,7 +228,11 @@ public class Interfaz1 extends javax.swing.JFrame {
                 .addGap(31, 31, 31)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jtxtFLista, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jtxtFLista, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jComboBoxMio1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton1)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jScrollPane2))
                 .addGap(18, 18, 18)
@@ -177,6 +247,16 @@ public class Interfaz1 extends javax.swing.JFrame {
         // TODO add your handling code here:
         guardarListaBD();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jComboBoxMio1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxMio1ActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_jComboBoxMio1ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        guardarComboBD();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -214,7 +294,9 @@ public class Interfaz1 extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private ComponentesPropios.jComboBoxMio jComboBoxMio1;
     private ComponentesPropios.jListMio<String> jListMio1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;

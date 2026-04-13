@@ -78,6 +78,7 @@ ComponentesPropios\InterfazEstudiante$5.class
 ComponentesPropios\Interfaz$2.class
 practicaExamen\InterfazPractica$11.class
 ClienteServidor\Interfaz$4.class
+ComponentesPropios\Interfaz1$5.class
 practicaExamen\CeldaPintada$2.class
 ComponentesPropios\InterfazEstudiante.class
 ClienteServidor\DAO.class
@@ -96,4 +97,5 @@ ComponentesPropiosAPE2\jtxtFDecimal.class
 ComponentesGrupo1\MiException.class
 practicaExamen\CeldaPintada$3.class
 ComponentesPropiosAPE1\jtxtFDecimal.class
+ComponentesPropios\Interfaz1$4.class
 ComponentesPropiosAPE1\jtxtFEnteros$1.class
